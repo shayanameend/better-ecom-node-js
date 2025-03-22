@@ -1,9 +1,11 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin } from "better-auth/plugins";
 
 import * as schema from "~/db/schema";
 
 import { db } from "~/db";
+import { ac, adminRole, userRole, vendorRole } from "~/lib/permissions";
 import { sendEmail } from "~/utils/mail";
 
 export const auth = betterAuth({
@@ -37,4 +39,14 @@ export const auth = betterAuth({
       });
     },
   },
+  plugins: [
+    admin({
+      ac,
+      roles: {
+        adminRole,
+        vendorRole,
+        userRole,
+      },
+    }),
+  ],
 });
