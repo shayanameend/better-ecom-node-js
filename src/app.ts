@@ -1,12 +1,16 @@
 import type { NextFunction, Request, Response } from "express";
 
+import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 
+import { auth } from "~/lib/auth";
 import { expandResponse } from "~/middlewares/response";
 
 const app = express();
+
+app.all("/api/auth/*", toNodeHandler(auth));
 
 app.use(cors());
 app.use(morgan("dev"));
