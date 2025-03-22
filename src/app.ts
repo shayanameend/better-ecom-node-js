@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
-import { toNodeHandler } from "better-auth/node";
+import { fromNodeHeaders, toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
@@ -25,6 +25,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(expandResponse);
+
+app.use("/me", async (request, response) => {
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(request.headers),
+  });
+
+  response.success(
+    {
+      data: {
+        session,
+      },
+    },
+    {
+      message: "Session retrieved successfully",
+    },
+  );
+});
 
 app.all("*", (_request, response) => {
   response.notFound({}, { message: "Not Found" });
